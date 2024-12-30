@@ -1,0 +1,98 @@
+{% extends "home/common_page_ressources.html" %}
+
+
+{% block content %}
+
+
+<h1 class="text-danger"> Désole cette page est innaccessible</h1>
+<h1 class="text-success"> <a href="{% url 'home_index'  %}">cliquez ici pour aller à l'acceuil</a>
+</h1>
+
+<center>
+
+    <canvas id="myCanvas" width="600" height="600"></canvas>
+
+</center>
+
+{% endblock %}
+
+
+{% blockScript %}
+
+
+<script>
+    // Récupérez le contexte 2D du canvas
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Définissez les propriétés des cercles
+    let circleX1 = 150;
+    let circleY1 = 150;
+    const circleRadius = 70;
+
+    let circleX2 = 200;
+    let circleY2 = 200;
+
+    let circleX3 = 250;
+    let circleY3 = 250;
+
+    let animationId;
+    let animationRunning = false;
+
+    // Fonction pour dessiner les trois cercles
+    function drawCircles() {
+        // Effacez le canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Dessinez le cercle vert
+        ctx.beginPath();
+        ctx.arc(circleX1, circleY1, circleRadius, 0, 2 * Math.PI);
+        ctx.fillStyle = 'green';
+        ctx.fill();
+
+        // Dessinez le cercle rouge
+        ctx.beginPath();
+        ctx.arc(circleX2, circleY2, circleRadius, 0, 2 * Math.PI);
+        ctx.fillStyle = 'red';
+        ctx.fill();
+
+        // Dessinez le cercle jaune
+        ctx.beginPath();
+        ctx.arc(circleX3, circleY3, circleRadius, 0, 2 * Math.PI);
+        ctx.fillStyle = 'yellow';
+        ctx.fill();
+    }
+
+    // Fonction d'animation
+    function animate() {
+        animationId = requestAnimationFrame(animate);
+
+        // Déplacez les cercles
+        circleX1 = 150 + 50 * Math.cos(Date.now() / 1000);
+        circleY1 = 150 + 50 * Math.sin(Date.now() / 1000);
+
+
+        circleX2 = 200 + 50 * Math.cos((Date.now() / 1000) + Math.PI / 2);
+        circleY2 = 200 + 50 * Math.sin((Date.now() / 1000) + Math.PI / 2);
+
+        circleX3 = 250 + 50 * Math.cos((Date.now() / 1000) + Math.PI);
+        circleY3 = 250 + 50 * Math.sin((Date.now() / 1000) + Math.PI);
+
+        // Dessinez les cercles
+        drawCircles();
+    }
+
+    // Fonction pour démarrer/arrêter l'animation
+    function toggleAnimation() {
+
+        animate();
+        animationRunning = true;
+        canvas.style.visibility = 'visible';
+
+    }
+
+    // Attacher l'événement click au bouton
+    toggleAnimation()
+</script>
+
+{% endblock %}

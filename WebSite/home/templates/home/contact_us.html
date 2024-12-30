@@ -1,0 +1,41 @@
+{% extends 'home/common_page_ressources.html' %}
+
+{% block title %} Contact Us {% endblock %}
+
+{% block content %}
+<center>
+{% if contact_us_status  %}
+    <h2 class="text text-success"> Votre Formulaire été envoyé avec success</h2>
+    
+{% else %}
+    <div class="contenainer">
+        <div class="card ">
+            {%for message_error in messages_error%}
+            <strong style="color: red;">{{message_error}}</strong>
+            {%endfor%}
+            <form action="" method="POST" enctype="multipart/form-data"> {% csrf_token %}
+
+                <div class="card">
+
+                    <div class="card-header text-center"><i class="fas fa-user"></i> Formulaire de contact</div>
+
+                    <div class="card-body">
+                        {{form}}
+                    </div>
+                    </p>
+                    <div class="card-footer">
+                        <button class="btn btn-primary ">
+                            Envoyer
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endif %}
+
+
+</center>
+
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "home/common_page_ressources.html" %}
+
+{% block content %}
+<div class="text-center">
+
+
+    <div class="card-header">
+        <h1 class="text-danger">ERREUR</h1>
+
+    </div>
+    <div class="card-body">
+        <h1 class="m-3 text-danger">Le payement de votre licence a échoué</h1>
+        <h1 style="color: green;">Rappel de la demande</h1>
+
+
+        <h1>nombre de mois : {{nombre_de_mois}} </h1>
+        <h1>nombre de machine : {{number_of_pc}} </h1>
+        <h1>Montant mensuel de la licence : {{Montant_mensuel_de_la_license}} FCFA </h1>
+        <h1> total amount : {{total_amount}} FCFA </h1>
+        <h1> Numero de payement : {{payement_phone_number}}</h1>
+
+
+    </div>
+
+    <div class="card-footer m-3">
+        
+        <button class="btn btn-primary ml-3" ><a href="{% url 'get_activation' %}">
+            <h1 style="color: black;">Modifier</h1>
+        </a></button>
+        <button class="btn btn-primary ml-3" ><a href="{% url 'user_dashboard' %}">
+                <h1 style="color: black;">Tableau de bord</h1>
+            </a></button>
+    </div>
+
+</div>
+{% endblock %}

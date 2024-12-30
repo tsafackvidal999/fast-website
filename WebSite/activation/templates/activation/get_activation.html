@@ -1,0 +1,251 @@
+{% extends 'home/common_page_ressources.html' %}
+
+{% block title %} Activation{% endblock %}
+
+{% block style %}
+<style>
+    li {
+        font-size: large;
+    }
+</style>
+
+
+{% endblock %}
+
+
+
+{% block content %}
+
+
+
+
+
+<div class="card m-3">
+
+
+    <h1 class="text text-primary">Utilisation et Droits d'Auteur</h1>
+    <p style="color: black;">Afin de garantir la maintenabilité du produit, son utilisation est liée à des droits
+        d'auteur.</p>
+
+    <h2 class="text text-primary">Comment ça marche?</h2>
+    <ol>
+        <li>
+            <h3 class="text text-primary">Côté site web</h3>
+            <ol style="color: black;">
+                <li>L'utilisateur soumet le nombre de mois d'activation, le nombre de PC qu'il compte installer, la clé
+                    qui l'utilisera, ainsi que le numéro MOMO/OM pour le paiement.</li>
+                <li>Il valide sa facture.</li>
+                <li>Il reçoit une alerte de retrait sur son compte MOMO/OM.</li>
+                <li>Il la valide.</li>
+                <li>On le redirige vers une page de confirmation où il doit télécharger sa clé produit. Cette dernière
+                    sera également présente sur son tableau de bord.</li>
+                <li>Le décompte de la durée de validité est lancé au moment où la clé produit est fournie.</li>
+            </ol>
+        </li>
+        <li>
+
+            <h3 class="text text-primary">Côté logiciel</h3>
+            <ol style="color: black;">
+                <li>Connectez votre PC à internet.</li>
+                <li>Lancez le logiciel FAST.</li>
+                <li>Dans l'onglet fichier, cliquez sur gestion de licence.</li>
+                <li>Dans la fenêtre qui s'ouvre, entrez la clé produit que vous avez téléchargée.
+                    <ol>
+                        <li>Si vous l'avez achetée mais ne l'avez pas téléchargée, vous pouvez la retrouver sur votre
+                            tableau de bord sur le site web.</li>
+                        <li>Si vous ne l'avez pas encore achetée, cliquez sur le bouton "Obtenir une clé d'activation".
+                        </li>
+                    </ol>
+                </li>
+                <li>Votre clé est ensuite vérifiée sur le serveur et vous obtenez le résultat de l'opération.</li>
+            </ol>
+        </li>
+    </ol>
+
+
+</div>
+
+<center>
+
+
+
+    <div class="contenainer m-5 pt-3 pb-3  bg-success" style="color: black; ">
+        <div class="col-md-12 mt-5">
+            <div class="card-header m-5">
+
+                <h1 style="font-weight: bold;">Formulaire d'activation</h1>
+                <h2>La licence est de {{Montant_mensuel_de_la_license}}fcfa/mois </h2>
+            </div>
+            {%for message_error in messages_error%}
+            <strong style="color: red;">{{message_error}}</strong>
+            {%endfor%}
+
+
+            {% csrf_token %}
+            <form action="" method="POST"> {% csrf_token %}
+                <center>
+                    <div class="card text-center mb-2" style="border-radius: 5% ; border-color: blue; width: 80%; ">
+
+
+
+                        <div class="mt-2 p-2">
+                            <label for="id_duration" style="color: black;">Nombre de mois de l'activation :</label>
+
+
+                            <input type="number" name="duration" min="1" max="60" required aria-invalid="true"
+                                id="id_duration">
+
+                        </div>
+
+                        <div class="mt-2 p-2">
+                            <label for="id_number_of_pc" style="color: black;">Nombre de machine à activer :</label>
+
+
+                            <input type="number" name="number_of_pc" min="1" max="75" required aria-invalid="true"
+                                id="id_number_of_pc">
+
+                        </div>
+                        <div class="mt-2 p-2">
+                            <label for="id_payement_phone_number" style="color: black;">Numero MOMO ou OM pour le
+                                payement
+                                :</label>
+
+
+                            <input type="number" name="payement_phone_number" required aria-invalid="true"
+                                id="id_payement_phone_number">
+
+                        </div>
+                        {% if do_i_ask_affillite_code %}
+                        <center>
+                            <div class="mt-2 p-2"
+                                style="background-color: lightgreen; width: 50%; align-items: center;">
+                                <label for="id_code_affillie">Code promo(optionnel) :</label>
+
+
+
+                                <input type="text" name="code_affillie" maxlength="30" id="id_code_affillie"
+                                    style="width: 70%; vertical-align: center; " class="mb-2">
+                                <br>
+                                <button id="apply_promotion_code" class="btn btn-primary " type="button">
+                                    Appliquer
+                                </button>
+                                <label id="add_days"></label>
+
+
+                            </div>
+                        </center>
+                        {% endif %}
+                        <div class="card-footer">
+                            <label id="label_somme_total" class="text text-success"> </label>
+                            <br>
+                            <button class="btn btn-primary ">
+                                <h1>Soumettre</h1>
+                            </button>
+                        </div>
+                    </div>
+                </center>
+            </form>
+
+
+        </div>
+    </div>
+
+
+</center>
+
+
+
+{% endblock %}
+
+
+{% block script %}
+<script>
+    //const my_affilliates_first_infos = eval(`${"{{my_affilmy_affilliates_first_infosliates | escapejs}}"}`);
+    try {
+        const affilliates_first_infos = {{ my_affilliates_first_infos| safe
+    }}
+    console.log('my_affilliates_first_infos', affilliates_first_infos);
+    document.getElementById('apply_promotion_code').addEventListener('click', function () {
+        user_code_promo = document.getElementById("id_code_affillie").value
+        console.log('user_code_promo', user_code_promo);
+        list_of_promo_code = affilliates_first_infos
+        get_code_promo = ['', 0]
+        for (let promo_code of list_of_promo_code) {
+            if (promo_code[0] === user_code_promo) {
+                get_code_promo = promo_code
+                break
+            }
+        }
+        if (get_code_promo[0] === user_code_promo && user_code_promo != "") {
+
+
+
+            add_days = get_code_promo[1]
+            add_days_element = document.getElementById('add_days')
+            add_days_element.textContent = 'Bravo vous avez obtenu ' + add_days + ' jours supplementaires'
+            add_days_element.classList.remove('text-danger')
+            add_days_element.classList.add('text', 'text-success');
+        }
+        else {
+            add_days_element = document.getElementById('add_days')
+
+            add_days_element.textContent = 'Code promo innexistant'
+            add_days_element.classList.remove('text-success')
+            add_days_element.classList.add('text', 'text-danger');
+        }
+    });
+
+
+    document.getElementById('id_code_affillie').addEventListener('input', function () {
+        document.getElementById('add_days').textContent = ''
+    });
+    }catch (error) {
+        console.error("error during appling  code promo in js")
+    }
+
+</script>
+
+<script>
+
+    document.getElementById('id_duration').addEventListener('input', function () {
+        calculate_amount()
+    })
+    document.getElementById('id_number_of_pc').addEventListener('input', function () {
+        calculate_amount()
+    })
+
+    function calculate_amount() {
+        try {
+            nombre_de_mois = document.getElementById('id_duration').value
+            nombre_de_pc = document.getElementById("id_number_of_pc").value
+            console.log('nombre_de_mois:', nombre_de_mois)
+            console.log('nombre_de_pc:', nombre_de_pc)
+            nombre_de_mois = parseInt(nombre_de_mois)
+            nombre_de_pc = parseInt(nombre_de_pc)
+
+            somme_total = parseInt(nombre_de_mois * nombre_de_pc * {{ Montant_mensuel_de_la_license| safe}})
+            console.log('somme_total:', somme_total)
+            if (!somme_total) {
+                console.log("somme_total not a number:", somme_total)
+
+            }
+            else {
+                document.getElementById('label_somme_total').textContent = 'Somme totale:' + somme_total
+
+
+                return
+            }
+
+
+            document.getElementById('label_somme_total').textContent = ""
+        }catch (error) {
+            console.error(error)
+            document.getElementById('label_somme_total').textContent = ""
+    }
+    
+}
+</script>
+
+
+
+{% endblock %}

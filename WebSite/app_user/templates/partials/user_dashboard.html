@@ -1,0 +1,568 @@
+{% extends 'partials/base.html' %}
+
+{% block title %} dashboard {% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% endblock %}
+
+{% block style %}
+
+<style>
+    table {
+        border-collapse: collapse;
+        table-layout: auto;
+        width: 80%;
+        margin-top: 2%;
+        margin-bottom: 2%;
+    }
+
+    th,
+    td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr.selected {
+        background-color: #d9edf7;
+        /* Couleur pour indiquer une ligne sélectionnée */
+    }
+
+    tr.row_error {
+        background-color: rgb(255, 50, 50);
+        /* Couleur pour indiquer une ligne sélectionnée */
+    }
+
+    .col-date {
+        width: 30%;
+        text-align: center;
+    }
+
+    .col-months {
+        width: 15%;
+        text-align: center;
+    }
+
+    .col-key {
+        width: 40%;
+        text-align: center;
+
+    }
+
+    .col-number_of_pc {
+        width: 15%;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <h1>DASHBOARD </h1>
+    {% if user.is_authenticated %}
+    <h1>BIENVENU {{cleanned_username}}</h1>
+
+
+    {% endif %}
+
+</div>
+<h1 class="text-primary">Mes activations</h1>
+
+
+
+
+{% if my_activations|length > 0 %}
+<center>
+
+    <table>
+        <thead>
+            <tr>
+                <th class="col-date">
+                    <h2>Date</h2>
+                </th>
+                <th class="col-key">
+                    <h2>Clé produits</h2>
+                </th>
+                <th class="col-months">
+                    <h2>Nombre de mois</h2>
+                </th>
+                <th class="col-number_of_pc">
+                    <h2>Nombre de machine</h2>
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for my_activation in my_activations %}
+            <tr>
+                <td class="col-date">
+                    <h3>{{my_activation.date_de_payement}}</h3>
+                </td>
+
+                <td class="col-key">
+                    <h3>{{my_activation.product_key}}</h3>
+                </td>
+                <td class="col-months">
+                    <h3>{{my_activation.who_many_months}}</h3>
+                </td>
+
+                <td class="col-number_of_pc">
+                    <h3>{{my_activation.number_of_pc}}</h3>
+                </td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</center>
+
+{% else %}
+<h1 style="margin-left: 10%;">Vous n'avez aucune Activation</h1>
+<h1 style="margin-left: 10%;"> Obtenir ma premiere  <a class="text-success" href="{% url 'get_activation' %}"><u>clé d'activation</u></a></h1>
+{% endif %}
+
+
+
+<h1 class="text-primary">Mon code affillié</h1>
+<div style="margin-left: 10%;">
+    {% if my_affillie_code %}
+    <h2 class="text text-success">{{my_affillie_code}}</h2>
+    {% else %}
+    <h3 class="text text-danger">
+
+        Vous n'avez pas de code affillié
+        <h2><a href="{% url 'Affiliation' %}" class="text text-success">Obtiens ton code affillié</a> pour generer des revenus passifs.</h2>
+    </h3>
+    {% endif %}
+
+</div>
+<h1 class="text-primary">Mes ventes</h1>
+<div style="margin-left: 10%;">
+    {% if Mes_ventes %}
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    <h2>Date de vente</h2>
+                </th>
+               
+                <th>
+                    <h2>Somme gangée</h2>
+                </th>
+            
+        </thead>
+        <tbody>
+            {% for vente in Mes_ventes %}
+            <tr>
+                <td>
+                    <h3>{{vente.date_de_payement}}</h3>
+                </td>
+                <td>
+                    <h3>{{vente.somme_gagner_par_l_affilie}}</h3>
+                </td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+    {% else %}
+    <h1 class="text text-danger">Vous n'avez aucune vente</h1>
+    <h1> Vous pouvez générer des revenus grâce au <a class="text-success" href="{% url 'Affiliation' %}"><u>programme
+                d'affilliation</u></a></h1>
+    {% endif %}
+</div>
+
+<div class="container">
+    <h1>Mes ventes</h1>
+    <div class="container" style="padding-top: 1%; background-color: blue;">
+        <label for="">Filtres</label>
+
+        <select name="aaa" id="select_clients">
+
+
+            <option value="ALL CLIENTS">Tout les clients</option>
+            <option value="NEW CLIENTS">Nouveau client</option>
+            <option value="OLD CLIENTS">Ancien client</option>
+        </select>
+        <select name="aaa" id="select_print_method">
+
+
+            <option value="ALL SELlS">Tous les instants</option>
+            <option value="DAYS">Jours</option>
+            <option value="MONTHS">Mois</option>
+            <option value="YEARS">Annéss</option>
+        </select>
+    </div>
+    <div id="chartContainer">
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
+
+
+
+
+
+
+<h1 class="text-primary">Mes retraits</h1>
+<div style="margin-left: 10%;">
+    {% if Mes_retraits %}
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    status
+                </th>
+                <th>
+                    montant
+                </th>
+                <th>
+                    
+                   No du beneficiare
+                </th>
+                <th>
+                    Nom du beneficiaire
+                </th>
+                <th>
+                    date d'initialisation
+                </th>
+                <th>
+                    date de traitement
+                </th>
+                <th>
+                    observation
+                </th>
+            
+        </thead>
+        <tbody>
+            {% for retrait in Mes_retraits %}
+            <tr>
+                {% if retrait.status == retrait.Status.PAYE  %}
+                    <td style="background-color: lightgreen;">
+                        {{retrait.status}}
+                    </td>
+                {% else %}
+                    {% if retrait.status == retrait.Status.EN_ATTENTE %}
+                        <td style="background-color: orange;">
+                            {{retrait.status}}
+                        </td>
+                    {% else %}
+                        {% if retrait.status == retrait.Status.ECHEC %}
+                            <td style="background-color: red;">
+                                {{retrait.status}}
+                            </td>
+                        {% else %}
+                            {% if retrait.status == retrait.Status.REFUSE %}
+                                <td style="background-color: red;">
+                                    {{retrait.status}}
+                                </td>
+                            {% else %}
+                                <td >
+                                    {{retrait.status}}
+                                </td>
+                            {% endif %}
+                        
+                        {% endif %}
+                        
+                    {% endif %}
+                    
+                {% endif %}
+                <td>
+                    {{retrait.amount}}
+                </td>
+                <td>
+                    {{retrait.numero_de_retrait}}
+                </td>
+                <td>
+                    {{retrait.nom_du_beneficaire}}
+                </td>
+                <td>
+                    {{retrait.date_de_demmande}}
+                </td>
+                <td>
+                    {% if retrait.date_de_traitement is not None %}
+                        {{retrait.date_de_traitement}}
+                    {% else %}
+
+                    {% endif %}
+                </td>
+                <td>
+                    {{retrait.motif_du_gestionnaire}}
+                </td>
+               
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+    {% else %}
+    <h2>Vous n'avez pas soumit de retrait pour l'instants</h2>
+    
+    {% endif %}
+</div>
+
+
+
+<h1 class="text-primary">BILAN GLOBAL DU COMPTE AFFILIE</h1>
+<div style="margin-left: 10%;">
+    {% if solde is not None %}
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    TOTAL DES VENTES
+                </th>
+               
+                <th>
+                    TOTAL DES RETRAITS
+                </th>
+               
+                <th>
+                    SOLDE ACTUEL
+                </th>
+            
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    
+                    {{total_ventes}}
+                    
+                </td>
+                <td>
+                    {{total_retrait}}
+                </td>
+                <td>
+                    {{solde}}
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    {% else %}
+    RAS
+    {% endif %}
+</div>
+
+
+
+{% endblock%}
+
+
+{% block js %}
+
+<script>
+
+    
+    let myChart = null;
+    //const labels = JSON.parse('{{ labels|safe|escapejs }}');
+     const labels = {{ labels| safe }}
+     const data = JSON.parse('{{ data|safe|escapejs }}');
+     const is_he_new_client = JSON.parse('{{ is_he_new_client|safe|escapejs }}');
+    recreateChart(labels, data)
+
+    document.getElementById('select_print_method').addEventListener('change', function () {
+        console.log(this.value)
+        modify_print_histogramme()
+
+    });
+
+    document.getElementById('select_clients').addEventListener('change', function () {
+        console.log(this.value)
+        modify_print_histogramme()
+    });
+
+    function modify_print_histogramme(){
+        select_clients = document.getElementById('select_clients').value
+        print_method = document.getElementById('select_print_method').value
+        select_labels = [];
+        select_datas = [];
+        labels_copy = JSON.parse(JSON.stringify(labels))     
+        data_copy = JSON.parse(JSON.stringify(data))     
+        console.log('modify_print_histogramme data',data)   
+        console.log('modify_print_histogramme labels_copy',labels_copy) 
+        console.log('modify_print_histogramme data_copy',data_copy)   
+        console.log('modify_print_histogramme labels',labels)        
+        if (select_clients == "ALL CLIENTS"){
+            select_labels = labels_copy
+            select_datas = data_copy
+
+        }
+        else{
+            if(select_clients == "NEW CLIENTS"){
+                for (i=0; i< data_copy.length; i++){
+                    if (is_he_new_client[i] == 1){
+                        select_labels.push(labels_copy[i])
+                        select_datas.push(data_copy[i])
+                        console.log('add NEW CLIENTS')
+                    }
+                    else{
+                        console.log('not a NEW CLIENTS')
+                        
+                    }
+                    console.log(select_labels)
+                    console.log(select_datas)
+
+                }
+            }
+            else{
+                if(select_clients == "OLD CLIENTS"){
+                    for (i=0; i< data_copy.length; i++){
+                        if (is_he_new_client[i] == 0){
+                            select_labels.push(labels_copy[i])
+                            select_datas.push(data_copy[i])
+                        }
+
+                }
+                }
+            }
+        }
+        
+        console.log("aaa select_labels:", select_labels)
+        console.log("aaaa select_datas:", select_datas)
+
+        final_select_labels = []
+        final_select_datas = []
+        if (print_method === "ALL SELlS"){
+            final_select_labels = select_labels
+            final_select_datas = select_datas
+
+        }
+        else{
+            if(print_method === "DAYS"){
+                for (i=0; i< select_labels.length; i++){
+                    select_labels[i] = select_labels[i].split(' ')[0]
+                    
+                }
+                console.log(' DAYS select_labels',select_labels)
+                //traitement des doublons
+                final_select_labels,final_select_datas = addition_des_doublons(select_labels,select_datas)
+                
+            }
+            else{
+                if(print_method === "MONTHS"){
+                    for (i=0; i< select_labels.length; i++){
+                    last_index = select_labels[i].lastIndexOf('-')
+                    select_labels[i] = select_labels[i].substring(0,last_index)
+                    
+                }
+                console.log(' MONTHS select_labels',select_labels)
+                final_select_labels,final_select_datas = addition_des_doublons(select_labels,select_datas)
+
+
+                
+                }
+                else{
+                    if(print_method === "YEARS"){
+                    for (i=0; i< select_labels.length; i++){
+                    first_index = select_labels[i].indexOf('-')
+                    select_labels[i] = select_labels[i].substring(0,first_index)
+                    
+                }
+                console.log(' YEARS select_labels',select_labels)
+                final_select_labels,final_select_datas = addition_des_doublons(select_labels,select_datas)
+
+                        
+
+                    
+                    }
+                }
+            }
+        }
+
+        console.log("aaa final_select_labels:", final_select_labels)
+        console.log("aaaa final_select_datas:", final_select_datas)
+
+        //print_histogramme(my_labels= select_labels, my_data= select_datas)
+
+        destroyChart(); // Détruire le graphique et le canvas
+        recreateChart(final_select_labels, final_select_datas);
+
+    }
+
+    function addition_des_doublons(my_labels, my_datas){
+        
+        final_select_labels = []
+        final_select_datas = []
+        for (i=0; i< my_labels.length; i++){
+            if ( final_select_labels.includes(my_labels[i])){
+                index = final_select_labels.indexOf(my_labels[i])
+                final_select_datas[index] += my_datas[i]
+                console.log('present',i)
+            }   
+            else{
+                console.log('absent',i)
+                final_select_labels.push(my_labels[i])
+                final_select_datas.push(my_datas[i])
+            }                 
+        }
+        console.log("addition_des_doublons final_select_labels",final_select_labels)
+        console.log("addition_des_doublons final_select_datas",final_select_datas)
+        return final_select_labels, final_select_datas
+    }
+    
+    function destroyChart() {
+            if (myChart) {
+                myChart.destroy(); // Détruire le graphique existant
+            }
+            const canvas = document.getElementById('myChart');
+            canvas.parentNode.removeChild(canvas); // Retirer le canvas du DOM
+        }
+
+        function recreateChart(my_labels, my_data) {
+            const container = document.getElementById('chartContainer');
+            const newCanvas = document.createElement('canvas');
+            newCanvas.id = 'myChart'; // Redonner l'ID au canvas
+            container.appendChild(newCanvas); // Ajouter le nouveau canvas au DOM
+            
+            //const selectedOption = document.getElementById('dataSelect').value;
+            //const selectedData = dataSets[selectedOption];
+
+            createChart(my_labels, my_data); // Créer un nouveau graphique
+        }
+
+    function createChart(my_labels, my_data) {    
+        console.log('createChart','my_labels',my_labels)
+        console.log('createChart','my_data',my_data)
+        const ctx = document.getElementById('myChart').getContext('2d');
+        
+        myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: my_labels,
+                datasets: [{
+                    label: 'Commissions',
+                    data: my_data,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date et Heure',
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'commissions',
+                        }
+                    }
+                }
+            }
+        });
+
+    }
+</script>
+{% endblock %}

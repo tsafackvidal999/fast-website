@@ -1,0 +1,41 @@
+{% extends 'partials/base.html' %}
+
+{%block content %}
+
+<div class="container">
+    <div class="row">
+
+        {%for my_article in my_articles %}
+        <div class="card col-12 col-md-6 col_lg_3 col-xl-3">
+
+            <div class="card p-2">
+
+                <a href="/home/article/{{my_article.id}}">
+
+                    <img src={{my_article.image.url}} class="card-img-top" alt="Impossible de charger l'image"
+                        style="height:300px" ; />
+                </a>
+
+
+                <div class="card-body" style="height:200px" ;>
+                    <h5 class="card-title">{{my_article.title}}</h5>
+                    <p class="card-text" style="height: 65px;">{{my_article.desc|truncatewords:10}}</p>
+                    <p>publier il y a {{my_article.created_at|timesince}}</p>
+                </div>
+                <strong>{{ my_article.nombre_de_vue}} vues</strong>
+                <a href="/home/article/{{my_article.id}}" class="btn btn-primary" data-mdb-ripple-init
+                    style="margin-bottom:30px;" ;>Lire la suite</a>
+
+            </div>
+        </div>
+
+    {%endfor%}
+
+
+
+
+    </div>
+</div>
+
+
+{% endblock %}

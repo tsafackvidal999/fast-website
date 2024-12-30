@@ -1,0 +1,47 @@
+{% extends 'home/common_page_ressources.html' %}
+
+
+
+{% block content %}
+<h2>resulats de la recherche  </h2>
+{{no_result}}
+<!-- {{results_de_le_recherche}} -->
+<div class="container">
+    <div class="row">
+        {%for myarticle in myarticles %}
+      
+        <div class="card col-12 col-md-6 col_lg_3 col-xl-3">
+
+            <div class="card p-2">
+
+                <a href="/home/article/{{myarticle.id}}">
+
+                    <img src={{myarticle.image.url}} class="card-img-top" alt="Impossible de charger l'image"
+                        style="height:300px" ; />
+                </a>
+
+
+                <div class="card-body" style="height:200px" ;>
+                    <h5 class="card-title">{{myarticle.title}}</h5>
+                    <p class="card-text" style="height: 65px;">{{myarticle.desc|truncatewords:10}}</p>
+                    <p>publier il y a {{myarticle.created_at|timesince}}</p>
+                </div>
+
+                {% include 'home/print_author_vues.html' %}
+
+                <a href="/home/article/{{myarticle.id}}" class="btn btn-primary" data-mdb-ripple-init
+                    style="margin-bottom:30px;" ;>Lire la suite</a>
+
+            </div>
+        </div>
+
+        {%endfor%}
+
+
+
+
+    </div>
+</div>
+
+
+{% endblock %}

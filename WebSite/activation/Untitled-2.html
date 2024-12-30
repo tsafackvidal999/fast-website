@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histogramme Dynamique</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Histogramme Dynamique</h1>
+        <label for="dataSelect">Choisissez un type de données :</label>
+        <select id="dataSelect">
+            <option value="option1">Ventes 2024</option>
+            <option value="option2">Ventes 2023</option>
+            <option value="option3">Ventes 2022</option>
+        </select>
+        <button id="changeChart">Changer le Graphique</button>
+        <div id="chartContainer">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let myChart = null;
+
+        const dataSets = {
+            option1: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+                data: [30, 20, 50, 40]
+            },
+            option2: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+                data: [20, 30, 40, 50]
+            },
+            option3: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+                data: [50, 40, 30, 20]
+            }
+        };
+
+        function createChart(labels, data) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Ventes',
+                        data: data,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function destroyChart() {
+            if (myChart) {
+                myChart.destroy(); // Détruire le graphique existant
+            }
+            const canvas = document.getElementById('myChart');
+            canvas.parentNode.removeChild(canvas); // Retirer le canvas du DOM
+        }
+
+        function recreateChart() {
+            const container = document.getElementById('chartContainer');
+            const newCanvas = document.createElement('canvas');
+            newCanvas.id = 'myChart'; // Redonner l'ID au canvas
+            container.appendChild(newCanvas); // Ajouter le nouveau canvas au DOM
+            
+            const selectedOption = document.getElementById('dataSelect').value;
+            const selectedData = dataSets[selectedOption];
+
+            createChart(selectedData.labels, selectedData.data); // Créer un nouveau graphique
+        }
+
+        // Créer le graphique initial
+        recreateChart();
+
+        document.getElementById('changeChart').addEventListener('click', function() {
+            destroyChart(); // Détruire le graphique et le canvas
+            recreateChart(); // Recréer le canvas et le graphique avec de nouvelles données
+        });
+
+        // Mettre à jour le graphique à l'initialisation
+        document.getElementById('dataSelect').addEventListener('change', function() {
+            destroyChart(); // Détruire le graphique et le canvas
+            recreateChart(); // Recréer le canvas et le graphique avec de nouvelles données
+        });
+    </script>
+</body>
+</html>

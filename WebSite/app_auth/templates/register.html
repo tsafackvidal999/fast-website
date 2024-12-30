@@ -1,0 +1,38 @@
+{% extends 'home/common_page_ressources.html' %}
+
+{% block title %} creation de compte {% endblock %}
+
+{% block content %}
+<center>
+
+    <div class="contenainer">
+        <div class="card col-12 col-md-6 col_lg_3 col-xl-3 mt-5">
+            {%for message_error in messages_error%}
+            <strong style="color: red;">{{message_error}}</strong>
+            {%endfor%}
+            <form action="" method="POST" enctype="multipart/form-data"> {% csrf_token %}
+
+                <div class="card">
+
+                    <div class="card-header text-center"><i class="fas fa-user"></i> creation de compte</div>
+
+                    <div class="card-body">
+                        {{form.as_p}}
+                    </div>
+                    <p>vous avez deja un compte? <a href="{% url 'login_blog' %}"> cliquez ici pour vous connecter</a>
+                    </p>
+                    <div class="card-footer">
+                        <button class="btn btn-primary btn-block">
+                            Creer un compte
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+</center>
+
+
+{% endblock %}

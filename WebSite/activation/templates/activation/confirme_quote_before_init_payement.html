@@ -1,0 +1,145 @@
+{% extends 'home/common_page_ressources.html' %}
+
+{% block title %} confirmation de demande d'activation {% endblock %}
+
+{% block content %}
+
+
+<div class="container full-height d-flex justify-content-center align-items-center ">
+
+    <div class="card">
+        <h1 class="text-primary text-center">Verification de la demande</h1>
+
+
+
+        <div class="card-body text-center">
+            <table class=" table table-bordered">
+                <thead>
+                    <tr>
+                        <th colspan="2">
+                            <h1 class="text text_success">FAST SOFTWARE</h1>
+                        </th>
+                    </tr>
+                </thead>
+                <h3>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <h3>
+                                    nombre de mois
+                                </h3>
+                            </td>
+                            <td>
+                                <h3>
+                                    {{nombre_de_mois}}
+                                </h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h3>Montant mensuel de la license </h3>
+                            </td>
+                            <td>
+                                <h3>{{Montant_mensuel_de_la_license}} FCFA </h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h3>Nombre de machine </h3>
+                            </td>
+                            <td>
+                                <h3> {{number_of_pc}}</h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h3>total amount </h3>
+                            </td>
+                            <td>
+                                <h3>{{total_amount}} FCFA </h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h3>Numero de payement </h3>
+                            </td>
+                            <td>
+                                <h3> {{payement_phone_number}}</h3>
+                            </td>
+                        </tr>
+                        <tr>
+
+
+                            {% if number_of_free_days == 1 %}
+                            <td>
+                                <h3> Nombre jour gratuit </h3>
+                            </td>
+                            <td>
+                                <h3>{{number_of_free_days}} jour </h3>
+                            </td>
+                            {%else%}
+
+                            {% if number_of_free_days > 1 %}
+                            <td>
+                                <h3> Nombre jours gratuits </h3>
+                            </td>
+                            <td>
+                                <h3>{{number_of_free_days}} jours</h3>
+                            </td>
+                            {% endif%}
+                            {% endif%}
+                        </tr>
+                    </tbody>
+                </h3>
+
+            </table>
+            
+            <div class="text text-center">
+                <h4>
+
+                <ol style="text-align: left;">
+                    <li>
+                        Si vos informations sont correctes
+                        <ol>
+                            <li>Cliquez sur le boutton </li>
+                            <LI>valider la demande retait initié par <span style="color: blue;">MEMSOMB</span> sur votre compte MOMO/OM</LI>
+                        </ol>
+                    </li>
+                    <li>
+                        Si non; cliquez sur <span style="color: #d1485f;">MODIFIER</span> pour réediter le formulaire
+                    </li>
+                </ol>
+            </h4>
+
+
+
+
+
+            </div> 
+
+
+            <div class="card-footer">
+                <a href="{% url 'get_activation'%}"> <button class="btn btn-danger m-3">
+                        <h1>Modifier</h1>
+                    </button></a>
+                <a href="{% url 'init_payement' %}"> <button class="btn btn-primary m-3" id="btn_Valider">
+                        <h1>Valider</h1>
+                    </button> </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{%endblock%}
+
+
+{% block js %}
+
+<script>
+    document.getElementById('btn_Valider').addEventListener('click', function() {
+        console.log(click)
+    })
+</script>
+
+{% endblock %}

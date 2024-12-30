@@ -1,0 +1,25 @@
+{% if telechargement.user is not None %}
+<strong>auteur: {{telechargement.user}}</strong>
+<br>
+{% endif %}
+
+
+{% if telechargement.nombre_de_techargement == 0 %}
+<strong>
+    <a href="{% url 'download' telechargement.id %}">
+        Soyez le premier à telecharger
+    </a>
+
+</strong>
+{%else%}
+{% if telechargement.nombre_de_techargement == 1 %}
+
+<strong>1 telechargement</strong>
+
+{%else%}
+<strong> {{telechargement.nombre_de_techargement}} telechargements</strong>
+
+{%endif%}
+
+
+{%endif%}

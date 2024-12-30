@@ -1,0 +1,3 @@
+FAST est un excellent logiciel mit en place pour permettre aux entreprises et aux
+        particuliers de booster leur éfficacités en mettant à leurs disposition des éléments leurs évitant les répétions
+        dans les saisies des devis, de fastidieux calculs ainsi que les risque d'érreurs qui y sont associés.</h2>

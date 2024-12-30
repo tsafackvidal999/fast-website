@@ -1,0 +1,49 @@
+{%load static%}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}  FAST {% endblock %} </title>
+   
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+    <!-- MDB -->
+    <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}" />
+    
+    {% block head %}
+
+    {% endblock %}
+    
+</head>
+
+<body>
+
+
+    {% include 'home/nave.html' %}
+
+
+
+    {% block content %}
+
+    {% endblock %}
+
+    {% include 'home/footer.html' %}
+    <!-- MDB -->
+    <script type="text/javascript" src="{% static 'js/mdb.umd.min.js' %}"></script>
+    <!-- Custom scripts -->
+    <script type="text/javascript"></script>
+    {% block script %}
+
+    <script type="text/javascript"></script>
+    {% endblock %}
+    
+</body>
+
+</html>

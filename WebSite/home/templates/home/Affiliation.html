@@ -1,0 +1,105 @@
+{% extends 'home/common_page_ressources.html' %}
+
+
+
+
+{% block content %}
+
+<div class="m-3">
+  <h1>Qu'est ce que l'affiliation?</h1>
+  <h3 class="m-3">
+    Il s'agit d'une technique optimisation des revenus utilisée
+    par certaines entreprises pour accroître leur rendement en développent
+    des partenariats avec des personnes extérieurs qui leurs apportent des clients
+    et reçoivent des commissions sur les achats de ces derniers.
+  </h3>
+
+
+  <h1>
+    comment ça marche dans notre cas?
+  </h1>
+  <h3 class="m-3">
+    <ol>
+      <li>
+        Créez votre compte affilié en remplissant le formulaire ci-dessous
+        <ol>
+          <li>
+
+            Choisissez votre votre code affilié (nous vous recommandons de choisir quelque chose de simple et facile à
+            retenir)
+          </li>
+          <li>
+
+            Définissez un nombre de jours gratuit (Cela encourage les utilisateurs à entrer votre code affilié. NB: ce
+            nombre de jours que vous octroyez sera déduit sur vos commissions au premier achat(uniquement) de
+            l'utilisateur. Vous pouvez mettre 0 jour si vous le souhaitez)
+          </li>
+        </ol>
+
+      </li>
+      <li>
+
+        Publicité
+        <ol>
+          <li>
+
+            Faites la promotion de votre code promo et du logiciel en invitant les utilisateurs à faire leur premier
+            achat avec votre code promo pour avoir des jours gratuits.
+          </li>
+          <li>
+            Les utilisateurs font leurs achats et c'est dans la poche. Vous aurez l'état de vos revenus sur votre
+            tableau de bord
+
+          </li>
+        </ol>
+      </li>
+    </ol>
+  </h3>
+
+
+</div>
+
+<center>
+  <div class="card col-12 col-md-6 col_lg_6 col-xl-6 bg-success " style="color: black;">
+    <div class="  m-3">
+      <h3>En souscrivant au programme d'affillition, vous approuvrez avoir lus et accepté les <a
+          href="{% url 'condictions_d_affilliation' %}" style="color: orange;"><u>condictions générales
+            d'Affiliation</u></a>
+      </h3>
+
+      <div class="contenainer">
+        <div class="col-md-12 mt-5">
+          <form action="" method="POST"> {% csrf_token %}
+
+            <div class="card">
+
+              {%for message_error in messages_error%}
+              <strong class='text-danger m-3'>{{message_error}}</strong>
+              {%endfor%}
+              <div class="card-header text-center"><i class="fas fa-user"></i> programme d'affilliation</div>
+              <div>
+                <h3>
+                  <div style="width: 80%;">
+
+                    {{form}}
+                  </div>
+                </h3>
+
+                <div class="card-footer">
+                  <button class="btn btn-primary">
+                    Valider
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</center>
+{% endblock %}

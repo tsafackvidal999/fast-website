@@ -1,0 +1,761 @@
+{% extends 'common_page_ressources.html' %}
+
+
+
+{%block title%}
+get invoice
+{%endblock%}
+
+{% block style %}
+
+
+<style>
+    table {
+        border-collapse: collapse;
+        table-layout: auto;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    th,
+    td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr.selected {
+        background-color: #d9edf7;
+        /* Couleur pour indiquer une ligne sélectionnée */
+    }
+
+    tr.row_error {
+        background-color: rgb(255, 50, 50);
+        /* Couleur pour indiquer une ligne sélectionnée */
+    }
+
+    .col-code {
+        width: 10%;
+    }
+
+    .col-designation {
+        width: 30%;
+    }
+
+    .col-depot {
+        width: 10%;
+    }
+
+    .col-qte {
+        width: 10%;
+    }
+
+    .col-p_u_brut {
+        width: 10%;
+    }
+
+    .col-p_remise {
+        width: 10%;
+    }
+
+    .col-p_u_net {
+        width: 10%;
+    }
+
+    .col-p_total {
+        width: 10%;
+    }
+</style>
+
+
+<style>
+    /* Styles pour la liste de suggestions */
+
+    .autocomplete-list {
+        border: 1px solid #ddd;
+        min-height: 0px;
+        max-height: 150px;
+        overflow-y: auto;
+        position: absolute;
+        z-index: 1000;
+        background-color: white;
+        width: device-width;
+    }
+
+    .autocomplete-item {
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .autocomplete-item:hover {
+        background-color: #eee;
+    }
+
+    /* Style pour les inputs pour les aligner */
+
+    .input-container {
+        position: relative;
+        /* margin-bottom: 20px; */
+    }
+</style>
+<style>
+    /* Style pour rendre la navbar flottante */
+   
+    .navbar-flottante {
+            position: fixed;
+            
+            z-index: 30;
+            /* Assure que la navbar est au-dessus des autres éléments */
+    }
+
+    
+     body {
+        padding-top: 56px;
+        /* Pour compenser la hauteur de la navbar */
+    }
+
+    .btn-orange {
+        background-color: orange;
+        /* Couleur orange */
+        color: white;
+        /* Texte en blanc */
+    }
+
+    .btn-orange:hover {
+        background-color: darkorange;
+        /* Couleur au survol */
+    }
+</style>
+{% endblock %}
+
+
+
+
+
+{% block content %}
+
+
+<center class="text-rigth  m-5" style="text-align: center;">
+    <h1><u>RECUPERATION DE FACTURE</u> </h1>
+</center>
+
+
+<nav class="navbar-flottante navbar-expand-lg bg-body-tertiary  ">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <li class="nav-item">
+                    <button id="ajouterLigne" class="btn btn-success m-1">Ajouter des lignes</button>
+                </li>
+                <li class="nav-item">
+                    <button id="supprimerLigneCourante" class="btn btn-orange m-1">Supprimer la ligne
+                        courante</button>
+
+                </li>
+
+
+                <li class="nav-item">
+                    <button id="soumettre" type="submit" class="btn btn-success m-1">Soumettre</button>
+                </li>
+
+
+
+
+            </ul>
+
+            <form class="d-flex" role="search">
+                <!-- input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"> -->
+                <input class="form-control mr-ms-2" type="text" placeholder="rechercher une commande"
+                    aria-label="get_invoice" name="command_id" />
+                <button class="btn btn-outline-success" type="submit">Rechercher</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+
+
+ 
+<h2 class="text text-danger m-5"> {{no_result}}</h2>
+
+
+<h2 class="mt-5">ID DE LA FACTURE: {{invoice_id}}</h2>
+<!-- <h3>{{final_command}}</h3> -->
+
+
+
+
+{% csrf_token %}
+<table id="monTableau" class="m-3">
+    <thead>
+        <tr>
+            <th class="col-code">Code</th>
+            <th class="col-designation">Désigantion</th>
+            <th class="col-depot">Dépot</th>
+            <th class="col-qte">Qté</th>
+            <th class="col-p_u_brut">P.U.BRUT</th>
+            <th class="col-p_remise">%R</th>
+            <th class="col-p_u_net">P.U.Net</th>
+            <th class="col-p_total">P.Total</th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+        {%for product in final_command %}
+        <tr>
+            <td>
+                <div class="input-container"><input type="text" placeholder="Code" class="autocomplete-input"
+                        value="{{product.code}}" id="{{forloop.counter0}}|Code"
+                        style="width:100%;  border:none; outline: none;" />
+                    <div class="autocomplete-list" style="display: none;"></div>
+                </div>
+            </td>
+            <td>
+                <div class="input-container"><input type="text" placeholder="Designation" class="autocomplete-input"
+                        value="{{product.designation}}" style="width:100%;  border:none; outline: none;"
+                        id='{{forloop.counter0}}|designation' />
+                    <div class="autocomplete-list" style="display: none;"></div>
+                </div>
+            </td>
+            <td> <input type="text" placeholder="Depot" class="my_input" value="{{product.depot}}"
+                    style="width:100%;  border:none; outline: none;" id='{{forloop.counter0}}|Depot' /></td>
+
+            <td><input type="number" min=0 placeholder="Qte" class="my_input" value="{{product.quantity}}"
+                    style="width:100%;  border:none; outline: none;" id='{{forloop.counter0}}|qte' /></td>
+            <td><label id='{{forloop.counter0}}|P_U_BRUT'>{{product.P_U_BRUT}}</label></td>
+            <td><input type="number" min=0 max=100 placeholder="%R" class="my_input"
+                    value="{{product.pourcentage_remise}}" style="width:100%;  border:none; outline: none;"
+                    id='{{forloop.counter0}}|%R' /></td>
+            <td><label id='{{forloop.counter0}}|P_U_NET'>{{product.P_U_NET}} </label></td>
+            <td><label id='{{forloop.counter0}}|P_TOTAL'> {{product.P_Total}} </label></td>
+
+        </tr>
+
+        {%endfor%}
+    </tbody>
+</table>
+
+
+
+
+<div id="response"></div>
+
+{%endblock%}
+
+
+{%block js %}
+
+<script>
+    const list_product = eval(`${"{{list_product | escapejs}}"}`);
+    console.log(list_product);
+
+    let line_id = 0;
+    try {
+
+        line_id = (document.getElementById('monTableau').rows.length) - 2; //pour gerrer les id des lines
+        console.log(line_id);
+    } catch (TypeError) {
+        console.error("error");
+        line_id = 0
+    }
+    add_property_in_initial_table();
+
+    function add_property_in_initial_table() {
+        var tableau = document.getElementById('monTableau');
+
+        if (tableau.length === 0) {
+            console.log("le tableau initiale est vide");
+            return;
+        }
+        for (var i = 1; i < tableau.rows.length; i++) {
+
+            // Écouteur d'événements pour sélectionner la ligne
+            tableau.rows[i].addEventListener('click', function () {
+                deselectAllRows(); // Désélectionne toutes les lignes
+                this.classList.add('selected'); // Sélectionne la ligne actuelle
+            });
+
+            tableau.rows[i].querySelectorAll('input').forEach(my_input => {
+                my_input.addEventListener('input', function () {
+                    console.log("new print", this.id, this.value);
+                    gestion_des_saisies(parseInt(this.id), this.id);
+                    if ((this.id.search("Code") >= 0) || (this.id.search("designation") >= 0)) {
+
+                        const autocompleteList = this.nextElementSibling; // Le div de suggestions associé
+                        console.log("autocompleteList", autocompleteList);
+                        initAutocomplete(this, autocompleteList);
+                    }
+                });
+            });
+            /* tableau.rows[i].querySelectorAll('autocomplete-input').forEach(my_input => {
+                my_input.addEventListener('input', function () {
+                console.log("new print ...", this.id, this.value);
+                gestion_des_saisies(parseInt(this.id), this.id);
+                const autocompleteList = this.nextElementSibling; // Le div de suggestions associé
+                console.log("autocompleteList",autocompleteList);
+                initAutocomplete(this, autocompleteList);
+                });
+            }); */
+
+
+
+        }
+    }
+
+    function increment_id_ligne() {
+        line_id++;
+
+    }
+    // Ajouter une nouvelle ligne
+    document.getElementById('ajouterLigne').addEventListener('click', function () {
+        var tableau = document.getElementById('monTableau');
+        var nombre_de_ligne = parseInt(prompt(message = "combien de ligne voulez-vous?", _defalt = 1));
+        if (!nombre_de_ligne) {
+            console.log("not a number")
+            nombre_de_ligne = 1;
+        }
+
+        console.log("nombre_de_line", nombre_de_ligne, typeof (nombre_de_ligne));
+        nombre_de_ligne = Math.min(nombre_de_ligne, 100);
+        for (let i = 0; i < nombre_de_ligne; i++) {
+
+            var line_index = find_current_line();
+
+            let nouvelleLigne = null;
+            if (line_index === null) {
+                nouvelleLigne = tableau.insertRow();
+
+            } else {
+                nouvelleLigne = tableau.insertRow(line_index + 1 + i);
+            }
+
+
+            // Crée des cellules dans la nouvelle ligne^ù£
+
+            var celluleRef = nouvelleLigne.insertCell(0);
+            var celluleDesignation = nouvelleLigne.insertCell(1);
+            var celluleDepot = nouvelleLigne.insertCell(2);
+            var celluleQte = nouvelleLigne.insertCell(3);
+            var cellule_P_U_BRUT = nouvelleLigne.insertCell(4);
+            var cellule_POURCENTAGE_REMISE = nouvelleLigne.insertCell(5);
+            var cellule_P_U_NET = nouvelleLigne.insertCell(6);
+            var cellule_P_Total = nouvelleLigne.insertCell(7);
+            line_id++;
+            console.log("line_id", line_id);
+            // Ajouter des champs de saisie dans les cellules
+            celluleRef.innerHTML = `<div class="input-container"> <input type="text" placeholder="Code"  class="autocomplete-input"  id='${line_id.toString() + "|Code"}' style="width:100%;  border:none; outline: none;"/>  <div class="autocomplete-list" style="display: none;"></div> </div>`;
+            celluleDesignation.innerHTML = `<div class="input-container"> <input type="text" placeholder="Designation"  class="autocomplete-input"  id='${line_id.toString() + "|designation"}' style="width:100%;  border:none; outline: none;"/>  <div class="autocomplete-list" style="display: none;"></div> </div>`;
+            celluleDepot.innerHTML = `<input type="text" placeholder="Depot"  class="my_input"  id='${line_id.toString() + "|Depot"}' style="width:100%;  border:none; outline: none;"/>`;
+            celluleQte.innerHTML = `<input type="number" min=0 placeholder="Qte"   class="my_input"   id='${line_id.toString() + "|qte"}' style="width:100%;  border:none; outline: none;" />`;
+            cellule_P_U_BRUT.innerHTML = `<label id='${line_id.toString() + "|P_U_BRUT"}'>  </label>`;
+            cellule_POURCENTAGE_REMISE.innerHTML = `<input type="number" min=0 max=100 placeholder="%R" value=0   class="my_input"   id='${line_id.toString() + "|%R"}' style="width:100%;  border:none; outline: none;" />`;
+            cellule_P_U_NET.innerHTML = `<label id='${line_id.toString() + "|P_U_NET"}'>  </label>`;
+            cellule_P_Total.innerHTML = `<label id='${line_id.toString() + "|P_TOTAL"}'>  </label>`;
+
+
+            // Écouteur d'événements pour sélectionner la ligne
+            nouvelleLigne.addEventListener('click', function () {
+                deselectAllRows(); // Désélectionne toutes les lignes
+                nouvelleLigne.classList.add('selected'); // Sélectionne la ligne actuelle
+            });
+            //console.log("nouvelleLigne", nouvelleLigne);
+            //console.log("nouvelleLigne.querySelector('input')", nouvelleLigne.querySelectorAll('input'));
+            nouvelleLigne.querySelectorAll('input').forEach(my_print_field => {
+                my_print_field.addEventListener('input', function () {
+                    console.log("new print", my_print_field.id, my_print_field.value);
+                    gestion_des_saisies(parseInt(my_print_field.id), my_print_field.id);
+                });
+            });
+
+
+
+            document.getElementById(`${line_id.toString() + "|Code"}`).addEventListener('input', function () {
+                console.log("new print", this.id, this.value);
+                gestion_des_saisies(parseInt(this.id), this.id)
+                const autocompleteList = this.nextElementSibling; // Le div de suggestions associé
+                initAutocomplete(this, autocompleteList);
+            });
+            document.getElementById(`${line_id.toString() + "|designation"}`).addEventListener('input', function () {
+                console.log("new print", this.id, this.value);
+                gestion_des_saisies(parseInt(this.id), this.id)
+                const autocompleteList = this.nextElementSibling; // Le div de suggestions associé
+                initAutocomplete(this, autocompleteList);
+            });
+            /*  document.getElementById(`${line_id.toString() + "|qte"}`).addEventListener('input', function () {
+                 console.log("new print", this.id, this.value);
+                 gestion_des_saisies(parseInt(this.id), this.id)
+             }); */
+        }
+        console.log("line_id", line_id)
+    });
+
+    // Supprimer la ligne courante
+    document.getElementById('supprimerLigneCourante').addEventListener('click', function () {
+        var tableau = document.getElementById('monTableau');
+        var lignes = tableau.rows;
+        var ligneSelectionnee = find_current_line();
+        // Supprimer la ligne sélectionnée si elle existe
+        if (ligneSelectionnee !== null) {
+            tableau.deleteRow(ligneSelectionnee);
+            if (tableau.rows.length > 1) {
+                if (ligneSelectionnee !== tableau.rows.length) {
+                    tableau.rows[ligneSelectionnee].classList.add('selected');
+
+                } else {
+                    tableau.rows[ligneSelectionnee - 1].classList.add('selected');
+
+                }
+            }
+
+        } else {
+            alert("Veuillez sélectionner une ligne à supprimer.");
+        }
+    });
+
+
+    // Fonction pour désélectionner toutes les lignes
+    function deselectAllRows() {
+        var tableau = document.getElementById('monTableau');
+        for (var i = 1; i < tableau.rows.length; i++) {
+            tableau.rows[i].classList.remove('selected');
+        }
+    }
+
+    function find_current_line() {
+        var tableau = document.getElementById('monTableau');
+        var lignes = tableau.rows;
+        var ligneSelectionnee = null;
+
+        // Identifier la ligne sélectionnée
+        for (var i = 0; i < lignes.length; i++) {
+            if (lignes[i].classList.contains('selected')) {
+                ligneSelectionnee = i;
+                break;
+            }
+        }
+        console.log("ligneSelectionnee:", ligneSelectionnee)
+
+        /* recherche de l'inpout ayant le focus */
+        focusedElement = document.activeElement;
+        if (focusedElement.tagName === 'INPUT') {
+            console.log('l\'input au foucuc est:' + focusedElement.placeholder + focusedElement.id);
+
+        } else {
+            console.log('Aucun input n_est au focus');
+        }
+
+        return ligneSelectionnee;
+    }
+
+
+    function gestion_des_saisies(id_of_line, object_id) {
+        console.log(`"line id" ${id_of_line.toString()}`);
+        Code = document.getElementById(`${id_of_line.toString() + "|Code"}`);
+        qte = document.getElementById(`${id_of_line.toString() + "|qte"}`);
+        designation_produit = document.getElementById(`${id_of_line.toString() + "|designation"}`);
+        P_unitaire_brut = document.getElementById(`${id_of_line.toString() + "|P_U_BRUT"}`);
+        pourcentage_remise = document.getElementById(`${id_of_line.toString() + "|%R"}`);
+        P_unitaire_net = document.getElementById(`${id_of_line.toString() + "|P_U_NET"}`);
+        P_total = document.getElementById(`${id_of_line.toString() + "|P_TOTAL"}`);
+        //console.log(Code,qte,designation_produit,P_unitaire_brut,P_total);
+
+
+        if ((object_id.search("qte") >= 0) || (object_id.search("%R") >= 0)) {
+            //modificatioon de la cellule "quantité"
+            calculate_total_price(qte, P_unitaire_brut, pourcentage_remise, P_unitaire_net, P_total);
+            return;
+        }
+        //console.log("list_product", list_product);
+        let product_exist = false;
+
+        for (let produit of list_product) {
+
+
+            if ((object_id.search("Code") >= 0) && (!product_exist)) {
+                //modificatioon de la cellule "Code"
+                if (Code.value.trim() == produit.code.trim()) {
+                    //console.log("1111111111");
+                    product_exist = true;
+                    designation_produit.value = produit.designation;
+                    P_unitaire_brut.textContent = produit.P_U_BRUT;
+                    calculate_total_price(qte, P_unitaire_brut, pourcentage_remise, P_unitaire_net, P_total);
+
+                    //remove_row_error_on_current_line();
+                    break;
+
+                } else {
+                    //console.log("2222222222222222222", Code.value,produit.code );
+                    designation_produit.value = "";
+                    P_unitaire_brut.textContent = "";
+                    P_total.textContent = '';
+                    add_row_error_on_current_line();
+
+                }
+
+            } else {
+                if ((object_id.search("designation") >= 0) && (!product_exist)) {
+                    //modificatioon de la cellule "designation"
+                    if (designation_produit.value.trim() == produit.designation.trim()) {
+                        //console.log("3333333");
+                        product_exist = true;
+                        Code.value = produit.code;
+                        P_unitaire_brut.textContent = produit.P_U_BRUT;
+                        calculate_total_price(qte, P_unitaire_brut, pourcentage_remise, P_unitaire_net, P_total);
+                        //remove_row_error_on_current_line();
+                        break;
+
+                    } else {
+                        //console.log("44444444444");
+                        Code.value = "";
+                        P_unitaire_brut.textContent = "";
+                        quantite = "";
+                        P_total.textContent = "";
+                        add_row_error_on_current_line();
+
+
+                    }
+
+                }
+            }
+        }
+
+
+        document.getElementById('response').innerHTML = '';
+    }
+
+
+    function add_row_error_on_current_line() {
+        line = document.getElementById('monTableau').rows[find_current_line()];
+        if (!line.classList.contains('row_error')) {
+            line.classList.add('row_error');
+        } else {
+            console.log(" the line allready has this class");
+        }
+
+    }
+
+    function remove_row_error_on_current_line() {
+        line = document.getElementById('monTableau').rows[find_current_line()];
+        if (line.classList.contains('row_error')) {
+            line.classList.remove('row_error');
+        } else {
+            console.log(" the line  hasn't this class");
+        }
+
+    }
+
+
+    function calculate_total_price(cell_qte, cell_P_u_brut, cell_pourcenatge_remise, cell_p_u_net, cell_P_Total) {
+        P_U_BRUT = parseFloat(cell_P_u_brut.textContent);
+        pourcentage_remise = parseFloat(cell_pourcenatge_remise.value);
+        p_u_net = parseFloat(P_U_BRUT * (1 - (pourcentage_remise / 100)));
+        quantite = parseFloat(cell_qte.value);
+
+        total = parseFloat(quantite * p_u_net);
+        if (!isNaN(p_u_net)) {
+            cell_p_u_net.textContent = p_u_net;
+        } else {
+            console.log("p_u_net", p_u_net);
+            document.getElementById('monTableau').rows[find_current_line()].classList.add('row_error');
+
+            cell_p_u_net.textContent = "";
+
+        }
+        if (!isNaN(total)) {
+            cell_P_Total.textContent = total;
+            remove_row_error_on_current_line()
+        } else {
+            console.log("P_total", P_total);
+            document.getElementById('monTableau').rows[find_current_line()].classList.add('row_error')
+
+            cell_P_Total.textContent = "****";
+            add_row_error_on_current_line();
+
+        }
+    }
+
+    function get_data_from_table(){
+        let produit = [{
+            "id_facture": `${"{{id_facture | escapejs}}"}`
+        }];
+        let tableau = document.getElementById('monTableau');
+
+        for (let i = 1; i < tableau.rows.length; i++) {
+
+            const p = {
+                "Code": tableau.rows[i].cells[0].querySelector('input').value,
+                "designation": tableau.rows[i].cells[1].querySelector('input').value,
+                "depot": tableau.rows[i].cells[2].querySelector('input').value,
+                "qte": tableau.rows[i].cells[3].querySelector('input').value,
+                "p_u_brut": tableau.rows[i].cells[4].querySelector('label').textContent,
+                "poucentage remise": tableau.rows[i].cells[5].querySelector('input').value,
+                "p_u_net": tableau.rows[i].cells[6].querySelector('label').textContent,
+                "p_total": tableau.rows[i].cells[7].querySelector('label').textContent,
+
+            };
+            //console.log(p);
+            produit.push(p);
+        }
+
+        return produit
+
+    }
+
+    document.getElementById("soumettre").addEventListener("click", function () {
+        let produit = [{
+            "id_facture": `${"{{id_facture | escapejs}}"}`
+        }];
+        let tableau = document.getElementById('monTableau');
+
+        for (let i = 1; i < tableau.rows.length; i++) {
+
+            const p = {
+                "Code": tableau.rows[i].cells[0].querySelector('input').value,
+                "designation": tableau.rows[i].cells[1].querySelector('input').value,
+                "depot": tableau.rows[i].cells[2].querySelector('input').value,
+                "qte": tableau.rows[i].cells[3].querySelector('input').value,
+                "p_u_brut": tableau.rows[i].cells[4].querySelector('label').textContent,
+                "poucentage remise": tableau.rows[i].cells[5].querySelector('input').value,
+                "p_u_net": tableau.rows[i].cells[6].querySelector('label').textContent,
+                "p_total": tableau.rows[i].cells[7].querySelector('label').textContent,
+
+            };
+            console.log(p);
+            produit.push(p);
+        }
+
+        const dataToSend = {
+            produit: produit // Envoie le tableau de personnes
+        };
+
+        fetch('/export_invoice', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken') // Assurez-vous d'inclure le token CSRF
+            },
+            body: JSON.stringify(dataToSend)
+        })
+            .then(response => response.text()) // Recevoir le texte HTML au lieu de JSON
+            .then(html => {
+                // Remplacer le contenu de la div 'response' par le HTML renvoyé
+                document.getElementById('response').innerHTML = html;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
+
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+
+
+
+    // Fonction pour gérer l'autocomplétion
+    const initAutocomplete = (inputField, autocompleteList) => {
+        inputField.addEventListener('input', function () {
+            const value = this.value;
+            autocompleteList.innerHTML = ''; // Effacer les suggestions précédentes
+            if (!value) {
+                autocompleteList.style.display = 'none';
+                return;
+            }
+
+            const filteredSuggestions = get_suggestions(value.toLowerCase(), this.id);
+            if (filteredSuggestions.length === 0) {
+                autocompleteList.style.display = 'none';
+                return;
+            }
+            let cmpt = 0;
+            filteredSuggestions.forEach(item => {
+                const div = document.createElement('div');
+                div.textContent = item;
+                //div.id = `${inputField.id}|sugges${cmpt}`;
+                div.classList.add('autocomplete-item');
+                div.addEventListener('click', function () {
+                    inputField.value = item.split("|")[(inputField.id.search('Code') >= 0) ? 0 : 1].trim(); // Définir l'input avec la suggestion cliquée
+                    autocompleteList.innerHTML = ''; // Effacer les suggestions
+                    autocompleteList.style.display = 'none'; // Cacher la liste
+                    gestion_des_saisies(parseInt(inputField.id), inputField.id);
+
+                });
+                autocompleteList.appendChild(div);
+            });
+
+            autocompleteList.style.display = 'block'; // Afficher les suggestions
+        });
+    };
+
+    function get_suggestions(query, id_of_field) {
+        const suggestions = list_product;
+        let filteredSuggestions = [];
+        suggestions.forEach(suggestion => {
+            if (id_of_field.search("Code") >= 0) {
+                if (suggestion.code.toLowerCase().search(query.toLowerCase()) >= 0) {
+                    filteredSuggestions.push(`${suggestion.code}|${suggestion.designation}|${suggestion.P_U_BRUT}`);
+                }
+            } else {
+
+                if (id_of_field.search("designation") >= 0) {
+                    if (suggestion.designation.toLowerCase().search(query.toLowerCase()) >= 0) {
+                        filteredSuggestions.push(`${suggestion.code}|${suggestion.designation}|${suggestion.P_U_BRUT}`);
+
+                        //filteredSuggestions.push(suggestion.designation);
+                    }
+                }
+
+            }
+        });
+        console.log("filteredSuggestions", filteredSuggestions);
+        return filteredSuggestions;
+    }
+
+
+
+    // Fermer la liste de suggestions lorsqu'on clique à l'extérieur
+
+    document.addEventListener('click', function (event) {
+        console.log("clique sur le document", event);
+
+        const inputs = document.querySelectorAll('.autocomplete-input');
+        //console.log("inputs",inputs)
+        inputs.forEach(input => {
+            const autocompleteList = input.nextElementSibling;
+            autocompleteList.innerHTML = '';
+            autocompleteList.style.display = 'none';
+        });
+
+    });
+</script>
+
+
+
+{%endblock%}

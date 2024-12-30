@@ -1,0 +1,58 @@
+{% extends 'home/common_page_ressources.html' %}
+
+{% block content %}
+
+
+<div class="container mt-3">
+    <div class="row">
+        <h1>Téléchargez vos fichiers</h1>
+
+        <div class="container">
+            <div class="row">
+
+                {%for telechargement in telechargements %}
+                <div class="card col-12 col-md-6 col_lg_3 col-xl-3">
+
+                    <div class="card p-2">
+
+                        <a href="{% url 'download' telechargement.id %}">
+
+                            <img src={{telechargement.logo.url}} class="card-img-top"
+                                alt="Impossible de charger le logo" style="height:300px" ; />
+                        </a>
+
+
+                        <div class="card-body" style="height:300px" ;>
+                            <h5 class="card-title mb-3">{{telechargement.my_file.name}}</h5>
+                            <h5 class="card-title">{{telechargement.title}}</h5>
+                            <!-- <p class="card-text" style="height: 65px;">{{ telechargement.desc|truncatewords:15 }}</p> -->
+                            <p>publier il y a {{telechargement.created_at|timesince}}</p>
+
+                        
+                        {% include 'home/print_author_vues.html' %}
+                            <br>
+                        <a href="{% url 'download' telechargement.id %}" class="btn btn-primary mb-2" data-mdb-ripple-init
+                            style="margin-bottom:30px;" ;>Telecharger</a>
+                        </div>
+                    </div>
+                </div>
+
+
+                {%endfor%}
+
+
+
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}
+
+<!-- End your project here-->

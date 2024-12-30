@@ -1,0 +1,64 @@
+{% extends 'home/common_page_ressources.html' %}
+
+
+
+{% block content %}
+
+
+<div class="container mt-5">
+    <div class="row">
+
+
+        <div class="card col-md-8">
+            <img src={{myarticle.image.url}} class="card-img-top" alt="Impossible de charger l'image"
+                style="max-width: 95%;">
+                {% include 'home/print_author_vues.html' %}
+            <div class="card-body">
+                <h5 class="card-title">{{myarticle.title}}</h5>
+                <p class="card-text">{{myarticle.desc}}</p>
+                <p>publier il y a {{myarticle.created_at|timesince}}</p>
+
+            </div>
+        </div>
+        <div class="col-md-4" style="border-left: 4px solid #0f5fd6;">
+            <h3 class="mt-2" style="text-align: center;">Les articles en relations</h3 class="mb-2">
+            <div class="row">
+
+                {% for articles_en_relation in articles_en_relations %}
+                {% if articles_en_relation.id != myarticle.id %}
+                <div class="col-md-7 mb-2">
+                    <a href="/home/article/{{articles_en_relation.id}}">
+                        <img src="{{articles_en_relation.image.url}}" alt="chagement de l'image Impossible"
+                            style="max-width: 90%;">
+                    </a>
+
+
+
+                </div>
+                <div class="col-5 mb-2">
+                    <a href="/home/article/{{articles_en_relation.id}}">
+                        <u>
+                            <strong>{{articles_en_relation.title|truncatewords:10}}</strong></u>
+                        <br>
+                    </a>
+                    {{articles_en_relation.desc|truncatewords:5}}
+
+                </div>
+
+                {%endif%}
+                {%endfor%}
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+    </div>
+    <h2 class="mb-5 mt-5"> <a href="/home/">tous les articles</a></2>
+
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'partials/base.html' %}
+
+{% block title %} Retrait {% endblock %}
+
+{% block content %}
+<div class="contenainer">
+    <div class="col-md-12 mt-5">
+        {%for message_error in messages_error%}
+        <strong class='text-danger'>{{message_error}}</strong >
+        {%endfor%}
+        <form action="" method="POST"> {% csrf_token %}
+
+            <div class="card">
+
+                <div class="card-header text-center"><i class="fas fa-user"></i>Initialisation de retrait</div>
+
+                <div class="card-body">
+                    <label for="id_amount" class="mb-2"> Montant</label>
+                    {{form.amount}}
+                    
+                    <!-- <small class="text-danger">{{username_valid}}</small>-->
+                    <br> 
+                    <label for="id_phone_number" class="mb-2"> Numero de Tel (MOMO/OM)</label>
+                    {{form.phone_number}}
+                    <br>
+                    <!-- <small class="text-danger">{{usersmallwd_valid}}</small> -->
+                    <label for="id_phone_number_confirmation" class="mb-2"> Confirmez le numero</label>
+                    {{form.phone_number_confirmation}}
+                    <br>
+                    <!-- <small class="text-danger">{{usersmallwd_valid}}</small> -->
+                    <label for="id_nom_du_beneficaire" class="mb-2">Nom du compte MOMO/OM</label>
+                    {{form.nom_du_beneficaire}}
+                    <br>
+                    <!-- <small class="text-danger">{{usersmallwd_valid}}</small> -->
+                
+                </div>
+                <p>vous n'êtes pas encore affilié? <a href="{% url 'Affiliation' %}">cliquez ici pour le devinir et touchez des commissions</a></p>
+                <div class="card-footer">
+                    <button class="btn btn-primary btn-block">
+                        Valider
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+{% endblock%}

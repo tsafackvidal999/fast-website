@@ -1,0 +1,47 @@
+{% extends 'home/common_page_ressources.html' %}
+
+{% block title %} connexion {% endblock %}
+
+{% block content %}
+<center>
+
+    <div class="contenainer">
+        <div class="card col-12 col-md-6 col_lg_3 col-xl-3 mt-5">
+            {%for message_error in messages_error%}
+            <strong class='text-danger'>{{message_error}}</strong >
+            {%endfor%}
+            
+            <form action="" method="POST"> {% csrf_token %}
+                
+                <h3 style="color: black;">
+
+                    <div class="card" >
+        
+                        <div class="card-header text-center"><i class="fas fa-user"></i> Connexion au compte</div>
+                        <div class="card-body">
+                            <label for="id_username"> nom d'utlisateur</label>
+                            {{form.username}}
+                            <small class="text-danger">{{username_valid}}</small>
+                            <br>
+                            <label for="id_pwd"> mot de passe</label>
+                            {{form.pwd}}
+                            <small class="text-danger">{{usersmallwd_valid}}</small>
+                        </div>
+                        <p>vous n'avez pas de compte? <a href="{% url 'register' %}">cliquez ici pour en creer</a></p>
+                        <div class="card-footer">
+                            <button class="btn btn-primary btn-block">
+                                Se Connecter
+                            </button>
+                        </div>
+                    </div>
+                </h3>
+            </form>
+        </div>
+    </div>
+</center>
+
+
+
+
+{% endblock %}
+

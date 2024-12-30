@@ -1,0 +1,93 @@
+{% extends "home/common_page_ressources.html" %}
+
+{% block style %}
+<style>
+    li{
+        font-size: large;
+    }
+</style>
+{%endblock%}
+
+
+
+{% block content %}
+<div style="color: black;" >
+
+
+    <div class="card-header">
+        <h1 class="text-primary">FELICITATION</h1>
+
+    </div>
+    <div class="m-3 btn-outline-success "  >
+        <h1 class="text-primary">Votre licence a été activée avec succèss</h1>
+        <div class="m-3">
+
+            <h1 style="color: green;">Rappel de la demande</h1>
+    
+            <div class="m-3">
+                <h3>nombre de mois : {{nombre_de_mois}} </h3>
+                <h3>nombre de machine : {{number_of_pc}} </h3>
+                <h3>Montant mensuel de la license : {{Montant_mensuel_de_la_license}} FCFA </h3>
+                <h3> total amount : {{total_amount}} FCFA </h3>
+                <h3> Clé produit : {{product_key}}  </h3>
+                <h3>Veuillez garder cette clé secretement</h3>
+    
+            
+                
+                <button id="downloadBtn" class="btn btn-primary "> <h1 style="color: black;">Télécharger la clé produit</h1></button>
+                <button class="btn btn-primary ml-3" ><a href="{% url 'user_dashboard' %}">
+                        <h1 style="color: black;">Tableau de bord</h1>
+                    </a></button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card m-3">
+        <h1 class="text text-primary">Que faire maintenant?</h1>
+        
+        <div class="m-3">
+            <h2 class="text text-primary">Côté logiciel</h2>
+            <h3 class="m-3">
+
+                <ol style="color: black;">
+                    <li>Connectez votre PC à internet.</li>
+                    <li>Lancez le logiciel FAST.</li>
+                    <li>Dans l'onglet fichier, cliquez sur gestion de licence.</li>
+                    <li>Dans la fenêtre qui s'ouvre, entrez la clé produit que vous venez d'acheter.</li>
+                    <li>Votre clé est ensuite vérifiée sur le serveur et vous obtenez le résultat de l'opération.</li>
+                </ol>
+            </h3>
+        </div>
+    </div>
+
+
+
+
+</div>
+<script>
+    document.getElementById('downloadBtn').onclick = function() {
+        // Contenu du fichier texte
+        const textContent = 
+        `La clé d'activation de votre Prduit est  ${"{{product_key | escapejs}}"}.
+    Rassurrez-vous de ne pas la rendre publique jusqu'a ce que vous aillez activé le nombre de machine pour le quel vous avez souscript.
+    Nous vous remerçions pour la confiance !
+    Bonnes continuations.` ;
+        // Créer un blob à partir du texte
+        const blob = new Blob([textContent], { type: 'text/plain' });
+        // Créer une URL pour le blob
+        const url = URL.createObjectURL(blob);
+        // Créer un élément <a> pour le téléchargement
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'fichier.txt'; // Nom du fichier
+        // Simuler un clic sur l'élément <a>
+        document.body.appendChild(a);
+        a.click();
+        // Nettoyer
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
+</script>
+{% endblock %}
